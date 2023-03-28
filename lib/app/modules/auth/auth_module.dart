@@ -1,24 +1,30 @@
 import 'package:provider/provider.dart';
-import 'package:todo_list_provider/app/core/modules/todo_list_module.dart';
-import 'package:todo_list_provider/app/modules/auth/login/login_controller.dart';
-import 'package:todo_list_provider/app/modules/auth/login/login_page.dart';
-import 'package:todo_list_provider/app/modules/auth/register/register_controller.dart';
-import 'package:todo_list_provider/app/modules/auth/register/register_page.dart';
+
+import '../../core/modules/todo_list_module.dart';
+import '../../services/user/user_service.dart';
+import 'login/login_controller.dart';
+import 'login/login_page.dart';
+import 'register/register_controller.dart';
+import 'register/register_page.dart';
 
 class AuthModule extends TodoListModule {
   AuthModule()
       : super(
           bindings: [
             ChangeNotifierProvider(
-              create: (_) => LoginController(),
+              create: (context) => LoginController(
+                userService: context.read<UserService>(),
+              ),
             ),
             ChangeNotifierProvider(
-              create: (_) => RegisterController(),
+              create: (context) => RegisterController(
+                userService: context.read<UserService>(),
+              ),
             )
           ],
           routers: {
-            '/login': (context) => LoginPage(),
-            '/register': (context) => RegisterPage(),
+            '/login': (context) => const LoginPage(),
+            '/register': (context) => const RegisterPage(),
           },
         );
 }

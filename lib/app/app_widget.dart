@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list_provider/app/core/database/sqlite_adm_connection.dart';
-import 'package:todo_list_provider/app/core/ui/todo_list_ui_config.dart';
-import 'package:todo_list_provider/app/modules/auth/auth_module.dart';
+
+import 'core/database/sqlite_adm_connection.dart';
+import 'core/navigator/todo_list_navigator.dart';
+import 'core/ui/todo_list_ui_config.dart';
+import 'modules/auth/auth_module.dart';
+import 'modules/home/home_module.dart';
+import 'modules/splash/splash_page.dart';
 
 class AppWidget extends StatefulWidget {
   const AppWidget({Key? key}) : super(key: key);
@@ -30,12 +34,13 @@ class _AppWidgetState extends State<AppWidget> {
     return MaterialApp(
       title: 'Todo list Provider',
       debugShowCheckedModeBanner: false,
+      navigatorKey: TodoListNavigator.navigatorkey,
       theme: TodoListUiConfig.theme,
       routes: {
         ...AuthModule().routers,
+        ...HomeModule().routers,
       },
-      initialRoute: '/login',
-      // home: SplashPage(),
+      home: const SplashPage(),
     );
   }
 }

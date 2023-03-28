@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list_provider/app/core/ui/todo_list_icons.dart';
+
+import '../ui/todo_list_icons.dart';
 
 class TodoListField extends StatelessWidget {
   final String label;
@@ -8,6 +9,7 @@ class TodoListField extends StatelessWidget {
   final ValueNotifier<bool> obscureTextVN;
   final TextEditingController? controller;
   final FormFieldValidator<String>? validador;
+  final FocusNode? focusNode;
 
   TodoListField({
     Key? key,
@@ -16,6 +18,7 @@ class TodoListField extends StatelessWidget {
     this.obscureText = false,
     this.controller,
     this.validador,
+    this.focusNode,
   })  : assert(
           obscureText ? suffixIconButton == null : true,
           'obscureText não pode ser enviado em conjunto com suffixIconButton',
@@ -29,6 +32,7 @@ class TodoListField extends StatelessWidget {
         valueListenable: obscureTextVN,
         builder: (_, obscureTextValue, child) {
           return TextFormField(
+            focusNode: focusNode,
             controller: controller,
             validator: validador,
             decoration: InputDecoration(

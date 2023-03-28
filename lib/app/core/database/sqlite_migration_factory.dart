@@ -1,5 +1,5 @@
-import 'package:todo_list_provider/app/core/database/migrations/migration.dart';
-import 'package:todo_list_provider/app/core/database/migrations/migration_v1.dart';
+import 'migrations/migration.dart';
+import 'migrations/migration_v1.dart';
 
 class SqliteMigrationFactory {
   List<Migration> getCreateMigration() => [
