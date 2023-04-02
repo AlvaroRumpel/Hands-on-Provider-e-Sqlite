@@ -5,13 +5,18 @@ import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import './user_repository.dart';
+import '../../core/database/sqlite_connection_factory.dart';
 import '../../exceptions/auth_exception.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final FirebaseAuth _firebaseAuth;
+  final SqliteConnectionFactory _sqliteConnectionFactory;
 
-  UserRepositoryImpl({required FirebaseAuth firebaseAuth})
-      : _firebaseAuth = firebaseAuth;
+  UserRepositoryImpl({
+    required FirebaseAuth firebaseAuth,
+    required SqliteConnectionFactory sqliteConnectionFactory,
+  })  : _firebaseAuth = firebaseAuth,
+        _sqliteConnectionFactory = sqliteConnectionFactory;
 
   @override
   Future<User?> register(String email, String password) async {
@@ -122,12 +127,16 @@ class UserRepositoryImpl implements UserRepository {
       }
       throw AuthException(message: 'Erro ao realizar o login');
     }
+
+    return null;
   }
 
   @override
   Future<void> logout() async {
     await GoogleSignIn().signOut();
     _firebaseAuth.signOut();
+    final conn = await _sqliteConnectionFactory.openConnection();
+    conn.delete('todo');
   }
 
   @override

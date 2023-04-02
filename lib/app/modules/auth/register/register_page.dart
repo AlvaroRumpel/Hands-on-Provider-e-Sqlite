@@ -29,7 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
     defaultListener.listener(
       context: context,
-      successCallback: (notifier, listenerInstance) => Navigator.pop(context),
+      successCallback: (notifier, listenerInstance) {},
     );
   }
 

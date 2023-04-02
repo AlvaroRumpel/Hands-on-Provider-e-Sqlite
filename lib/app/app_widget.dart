@@ -37,7 +37,7 @@ class _AppWidgetState extends State<AppWidget> {
       title: 'Todo list Provider',
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: const [

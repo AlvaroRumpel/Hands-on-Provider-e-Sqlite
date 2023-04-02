@@ -1,19 +1,47 @@
 import 'package:flutter/material.dart';
 
+import '../../core/notifier/default_listener_notifier.dart';
 import '../../core/ui/theme_extensions.dart';
 import '../../core/ui/todo_list_icons.dart';
+import '../../models/task_filter_enum.dart';
 import '../tasks/tasks_module.dart';
+import 'home_controller.dart';
 import 'widgets/home_drawer.dart';
 import 'widgets/home_filters.dart';
 import 'widgets/home_header.dart';
 import 'widgets/home_tasks.dart';
 import 'widgets/home_week_filter.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  final HomeController _homeController;
 
-  void _goToCreateTask(BuildContext context) {
-    Navigator.of(context).push(
+  const HomePage({
+    Key? key,
+    required HomeController homeController,
+  })  : _homeController = homeController,
+        super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+
+    DefaultListenerNotifier(changeNotifier: widget._homeController).listener(
+      context: context,
+      successCallback: (notifier, listenerInstance) {},
+    );
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      widget._homeController.loadTotalTasks();
+      widget._homeController.findTasks(filter: TaskFilterEnum.today);
+    });
+  }
+
+  Future<void> _goToCreateTask(BuildContext context) async {
+    await Navigator.of(context).push(
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 400),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -32,6 +60,8 @@ class HomePage extends StatelessWidget {
         },
       ),
     );
+
+    await widget._homeController.refreshPage();
   }
 
   @override
@@ -45,9 +75,13 @@ class HomePage extends StatelessWidget {
         actions: [
           PopupMenuButton(
             icon: const Icon(TodoListIcons.filter),
+            onSelected: (value) =>
+                widget._homeController.showOrHideFinishedTasks(),
             itemBuilder: (_) => [
-              const PopupMenuItem<bool>(
-                child: Text('Mostrar tarefas concluidas'),
+              PopupMenuItem<bool>(
+                value: true,
+                child: Text(
+                    '${widget._homeController.showFinishedTask ? 'Esconder' : 'Mostrar'} tarefas concluidas'),
               )
             ],
           )

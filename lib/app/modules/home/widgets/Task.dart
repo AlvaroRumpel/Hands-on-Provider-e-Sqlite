@@ -1,40 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+import '../../../models/task_model.dart';
+import '../home_controller.dart';
 
 class Task extends StatelessWidget {
-  const Task({Key? key}) : super(key: key);
+  final TaskModel model;
+
+  const Task({
+    Key? key,
+    required this.model,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
-          BoxShadow(color: Colors.grey),
-        ],
-        border: Border.all(
-          width: 1,
-          color: Colors.grey,
+    return Dismissible(
+      key: Key(model.id.toString()),
+      direction: DismissDirection.startToEnd,
+      onDismissed: (value) =>
+          context.read<HomeController>().deleteTask(model.id),
+      background: Container(
+        decoration: BoxDecoration(
+          color: Colors.red.shade400,
+          borderRadius: BorderRadius.circular(20),
         ),
+        margin: const EdgeInsets.symmetric(vertical: 5),
       ),
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      child: IntrinsicHeight(
-        child: ListTile(
-          contentPadding: const EdgeInsets.all(8),
-          leading: Checkbox(
-            value: true,
-            onChanged: (value) {},
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: const [
+            BoxShadow(color: Colors.grey),
+          ],
+          border: Border.all(
+            width: 1,
+            color: Colors.grey,
           ),
-          title: Text(
-            'Descrição da task',
-            style: TextStyle(
-              decoration: false ? TextDecoration.lineThrough : null,
+        ),
+        margin: const EdgeInsets.symmetric(vertical: 5),
+        child: IntrinsicHeight(
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(8),
+            leading: Checkbox(
+              value: model.finished,
+              onChanged: (value) =>
+                  context.read<HomeController>().checkOrUncheckTask(model),
             ),
-          ),
-          subtitle: Text(
-            '20/03/23',
-            style: TextStyle(
-              decoration: false ? TextDecoration.lineThrough : null,
+            title: Text(
+              model.description,
+              style: TextStyle(
+                decoration: model.finished ? TextDecoration.lineThrough : null,
+              ),
+            ),
+            subtitle: Text(
+              DateFormat('dd/MM/y').format(model.dateTime),
+              style: TextStyle(
+                decoration: model.finished ? TextDecoration.lineThrough : null,
+              ),
             ),
           ),
         ),

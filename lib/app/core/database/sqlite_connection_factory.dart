@@ -26,7 +26,7 @@ class SqliteConnectionFactory {
     var databasePathFinal = join(databasePath, _DATABASE_NAME);
 
     if (_db == null) {
-      _lock.synchronized(
+      await _lock.synchronized(
         () async {
           _db ??= await openDatabase(
             databasePathFinal,
